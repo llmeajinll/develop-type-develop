@@ -31,9 +31,14 @@ button{font:inherit;color:inherit;cursor:pointer}
 /* top bar */
 .top{display:flex;align-items:center;gap:12px 20px;flex-wrap:wrap;padding:12px 24px;border-bottom:1px solid var(--line);background:var(--panel)}
 .top h1{margin:0;font-size:1.05rem;font-weight:600;letter-spacing:-.01em;margin-right:auto}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--sheet)}
-.seg button{border:0;background:transparent;padding:7px 14px;font-size:.88rem;color:var(--muted)}
-.seg button[aria-pressed="true"]{background:var(--ok);color:var(--ok-ink);font-weight:500}
+/* 모드 스위치: 지금 모드의 글자를 진하게, 읽기면 손잡이가 오른쪽 */
+.mode-switch{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;padding:6px 2px;font-size:.88rem;color:var(--muted)}
+.switch-track{position:relative;width:40px;height:22px;border-radius:999px;background:var(--faint);transition:background .2s}
+.switch-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .2s}
+.mode-switch[aria-checked="true"] .switch-track{background:var(--ok)}
+.mode-switch[aria-checked="true"] .switch-thumb{transform:translateX(18px)}
+.mode-switch[aria-checked="false"] .lbl-follow,.mode-switch[aria-checked="true"] .lbl-read{color:var(--ink);font-weight:600}
+@media (prefers-reduced-motion: reduce){.switch-track,.switch-thumb{transition:none}}
 .overall{font-size:.88rem;color:var(--muted)}
 .overall b{color:var(--ink);font-weight:600}
 
@@ -181,7 +186,7 @@ dialog::backdrop{background:rgba(10,20,30,.45)}
   .btn{min-height:42px;padding:9px 14px}
   .btn.quiet{min-height:36px}
   .chip{padding:7px 12px;font-size:.86rem}
-  .seg button{padding:9px 12px}
+  .mode-switch{min-height:42px}
   .qitem{padding:11px 9px}
 }
 @media (max-width:860px) and (prefers-reduced-motion: reduce){
