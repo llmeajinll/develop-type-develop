@@ -11,6 +11,7 @@ export function PracticePage(){
   const progress = useProgressStore()
   const [filterCat, setFilterCat] = useState(ALL_CAT)
   const [onlyTodo, setOnlyTodo] = useState(false)
+  const [listOpen, setListOpen] = useState(false) // 모바일에서만 쓰는 목록 오버레이
 
   const all = QUESTIONS.concat(progress.custom)
   const cats = getCategories(progress.custom.length > 0)
@@ -18,6 +19,7 @@ export function PracticePage(){
   const filtered = (c = cat, qs = all) => filterQuestions(qs, {cat:c, onlyTodo, done:progress.done})
   const list = filtered()
   const recall = progress.mode === 'recall'
+  const doneCount = all.filter(q => progress.done[q.id]).length
 
   const session = useTypingSession(all.find(q => q.id === progress.lastId) || QUESTIONS[0], { onFinish: progress.recordResult })
   const cur = session.sess.q
@@ -25,6 +27,7 @@ export function PracticePage(){
   function loadQuestion(q){
     session.load(q)
     progress.setLastId(q.id)
+    setListOpen(false)
   }
   function step(dir){
     if(!list.length) return
@@ -38,6 +41,7 @@ export function PracticePage(){
   }
   function selectCat(c){
     setFilterCat(c)
+    if(listOpen) return // 모바일 목록에서는 분류만 바꾸고, 질문은 직접 고르게 둠
     const l = filtered(c)
     if(l.length && !l.some(q => q.id === cur.id)) loadQuestion(l[0])
     else session.focus()
@@ -58,15 +62,16 @@ export function PracticePage(){
 
   return (
     <>
-      <Header mode={progress.mode} onModeChange={changeMode} doneCount={all.filter(q => progress.done[q.id]).length} total={all.length} />
-      <div className="layout">
+      <Header mode={progress.mode} onModeChange={changeMode} doneCount={doneCount} total={all.length} onOpenList={() => setListOpen(true)} />
+      <div className={'layout' + (listOpen ? ' is-list-open' : '')}>
         <QuestionSidebar
           filterProps={{cats, active:cat, questions:all, onSelect:selectCat, onOnlyTodoChange:setOnlyTodo}}
           list={list} done={progress.done} onlyTodo={onlyTodo} currentId={cur.id}
           onPick={loadQuestion} onAdd={addQuestion} onReset={progress.resetDone}
+          open={listOpen} onClose={() => setListOpen(false)}
         />
         <TypingBoard
-          session={session} recall={recall}
+          session={session} recall={recall} doneCount={doneCount} total={all.length}
           onRestart={() => loadQuestion(cur)} onPrev={() => step(-1)} onNext={() => step(1)}
           onRandom={randomQ} onDelete={deleteCurrent}
         />

@@ -127,6 +127,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .btn.quiet{border-color:transparent;background:transparent;color:var(--muted);padding:6px 8px;font-size:.82rem}
 .btn.quiet:hover{color:var(--ink)}
 .spacer{flex:1}
+.list-btn,.side-head,.stage-overall,.title-short{display:none}
+.side-head{align-items:center;justify-content:space-between;font-size:1rem}
 
 .result{margin-top:20px;padding:20px 22px;border:2px solid var(--ok);border-radius:12px;background:var(--sheet)}
 .result h3{margin:0 0 10px;font-size:1.1rem}
@@ -150,9 +152,37 @@ dialog::backdrop{background:rgba(10,20,30,.45)}
 @media (max-width:860px){
   body{height:auto;min-height:100%}
   .layout{display:block}
-  .side{border-right:0;border-bottom:1px solid var(--line)}
-  .qlist{max-height:210px;flex:none}
-  .stage{overflow:visible;padding-top:22px}
-  .top{padding:12px 16px}
-  .line{padding-left:16px;padding-right:16px}
+  .top{padding:10px 16px;gap:10px}
+  .top h1{font-size:.98rem}
+  /* 헤더: 제목 · 모드 전환 · 목록 아이콘(맨 오른쪽). 완료 내역은 질문 제목 위로 */
+  .top .overall{display:none}
+  /* 1줄: 분류 태그 + 완료 내역 (+ 삭제 버튼) / 2줄: 질문 제목 */
+  .stage-overall{display:inline;margin-top:6px}
+  .qhead{gap:8px 12px}
+  .qhead h2{order:1;flex-basis:100%;min-width:0}
+  /* 모바일 헤더는 줄임말. 전체 이름은 화면 읽기 프로그램용으로 남겨 둠 */
+  .title-short{display:inline}
+  .title-full{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .top .list-btn{order:1}
+  .btn.list-btn{display:inline-grid;place-items:center;width:42px;height:42px;padding:0}
+  /* 질문 목록은 전체 화면 오버레이로 */
+  /* 닫힘: 오른쪽 밖에 숨김(햄버거 버튼 쪽에서 나옴). visibility는 슬라이드가 끝난 뒤(.25s) 꺼져서 닫히는 동작도 보이고, 닫힌 뒤엔 포커스·낭독 대상에서 빠짐 */
+  .side{position:fixed;inset:0;z-index:20;border-right:0;padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(100%);visibility:hidden;transition:transform .25s ease-in,visibility 0s linear .25s}
+  .layout.is-list-open .side{transform:none;visibility:visible;transition:transform .25s ease-out}
+  .side-head{display:flex}
+  body:has(.is-list-open){overflow:hidden}
+  .stage{overflow:visible;padding:18px 16px 32px}
+  .line{padding-left:14px;padding-right:14px}
+  .line.is-live{scroll-margin-top:12px}
+  /* 숨긴 입력창을 화면 위에 고정해서, 키보드가 올라올 때 브라우저가 페이지를 엉뚱하게 스크롤하지 않게 함 */
+  .typer{position:fixed}
+  /* 터치하기 좋은 크기 */
+  .btn{min-height:42px;padding:9px 14px}
+  .btn.quiet{min-height:36px}
+  .chip{padding:7px 12px;font-size:.86rem}
+  .seg button{padding:9px 12px}
+  .qitem{padding:11px 9px}
+}
+@media (max-width:860px) and (prefers-reduced-motion: reduce){
+  .side,.layout.is-list-open .side{transition:none}
 }
