@@ -1,7 +1,7 @@
 import { strokes } from '@/shared/lib'
 
 export function freshSession(q, n){
-  return {q, n, lineIdx:0, typedLines:[], value:'', composing:false, startTime:null, endTime:null, hintUntil:0, hintCount:0, result:null}
+  return {q, n, lineIdx:0, typedLines:[], value:'', composing:false, startTime:null, endTime:null, result:null}
 }
 
 function compare(target, typed, committed){

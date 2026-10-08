@@ -34,7 +34,7 @@ export function useTypingSession(initialQuestion, { onFinish }){
     if(!/\s$/.test(target)) typed = typed.replace(/\s+$/, '')
     const typedLines = [...s.typedLines]
     typedLines[s.lineIdx] = typed
-    const next = {...s, typedLines, lineIdx: s.lineIdx + 1, hintUntil:0, composing:false, value:'', startTime: s.startTime || now}
+    const next = {...s, typedLines, lineIdx: s.lineIdx + 1, composing:false, value:'', startTime: s.startTime || now}
     if(next.lineIdx >= s.q.a.length){
       next.endTime = now
       const st = computeStats(next)
@@ -50,18 +50,6 @@ export function useTypingSession(initialQuestion, { onFinish }){
     if(!sessRef.current.composing && value === s.q.a[s.lineIdx]) advance()
   }
 
-  function hint(){
-    const s = sessRef.current
-    if(s.result) return
-    const t = s.q.a[s.lineIdx], from = Math.max(s.value.length, s.hintUntil)
-    if(from >= t.length) return
-    let k = from
-    while(k < t.length && t[k] === ' ') k++
-    while(k < t.length && t[k] !== ' ') k++
-    set({hintUntil:k, hintCount: s.hintCount + 1})
-    focus()
-  }
-
   const inputProps = {
     ref: inputRef,
     value: sess.value,
@@ -75,5 +63,5 @@ export function useTypingSession(initialQuestion, { onFinish }){
     },
   }
 
-  return { sess, finished, live: computeStats(sess), load, hint, focus, inputProps }
+  return { sess, finished, live: computeStats(sess), load, focus, inputProps }
 }

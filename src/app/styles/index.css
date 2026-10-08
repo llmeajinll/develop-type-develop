@@ -81,9 +81,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .line .bad{color:var(--bad);background:var(--bad-bg)}
 .line .miss{color:var(--bad);text-decoration:underline dotted;opacity:.75}
 .line .comp{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
-.line .hint{color:var(--muted)}
-.line .hide{color:transparent;border-bottom:2px solid var(--faint)}
-.line .hide.sp{border-bottom-color:transparent}
 .line .over{color:var(--bad);background:var(--bad-bg);text-decoration:line-through}
 .line .caret{box-shadow:inset 2px 0 0 var(--ok);animation:blink 1s steps(1) infinite}
 .line .caret.end{display:inline-block;width:2px;height:1.1em;vertical-align:-0.15em;box-shadow:none;background:var(--ok)}
@@ -93,6 +90,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 @media (prefers-reduced-motion: reduce){.line .caret,.line .caret.end{animation:none}}
 
 .sheet{cursor:text}
+/* 읽기 모드: 답변 전체를 본문 색으로 */
+.sheet.is-read{cursor:auto;padding:12px 0}
+.sheet.is-read .line{color:var(--ink)}
 
 /* 시퀀스 다이어그램: 화살표는 출발·도착 칸의 가운데끼리 잇도록 양옆을 반 칸씩 비움 */
 .seq{margin:14px 0 0;padding:14px 12px 18px;background:var(--sheet);border:1px solid var(--line);border-radius:12px;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));row-gap:10px;font-size:.8rem;line-height:1.4;word-break:keep-all;overflow-wrap:anywhere}
@@ -108,6 +108,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .seq-msg.is-done{color:var(--muted)}
 .seq-msg.is-todo{color:var(--faint)}
 .seq-msg.is-live{color:var(--ok);font-weight:600}
+.seq-msg.is-read{color:var(--ink)}
 .seq-msg.is-live.self span{background:var(--band)}
 /* 입력은 숨긴 input이 받고, 화면에는 본문 줄에 바로 그려짐 (IME 때문에 input 자체는 필요) */
 .typer-wrap{position:relative;margin-top:8px}

@@ -18,7 +18,7 @@ export function PracticePage(){
   const cat = cats.includes(filterCat) ? filterCat : ALL_CAT
   const filtered = (c = cat, qs = all) => filterQuestions(qs, {cat:c, onlyTodo, done:progress.done})
   const list = filtered()
-  const recall = progress.mode === 'recall'
+  const reading = progress.mode === 'read'
   const doneCount = all.filter(q => progress.done[q.id]).length
 
   const session = useTypingSession(all.find(q => q.id === progress.lastId) || QUESTIONS[0], { onFinish: progress.recordResult })
@@ -71,7 +71,7 @@ export function PracticePage(){
           open={listOpen} onClose={() => setListOpen(false)}
         />
         <TypingBoard
-          session={session} recall={recall} doneCount={doneCount} total={all.length}
+          session={session} reading={reading} doneCount={doneCount} total={all.length}
           onRestart={() => loadQuestion(cur)} onPrev={() => step(-1)} onNext={() => step(1)}
           onRandom={randomQ} onDelete={deleteCurrent}
         />

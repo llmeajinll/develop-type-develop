@@ -6,7 +6,7 @@ function load(){
   try{
     const s = JSON.parse(localStorage.getItem(KEY))
     if(s && typeof s === 'object'){
-      return {done:s.done||{}, custom:Array.isArray(s.custom)?s.custom:[], mode:s.mode==='recall'?'recall':'follow', lastId:s.lastId||null}
+      return {done:s.done||{}, custom:Array.isArray(s.custom)?s.custom:[], mode:s.mode==='read'?'read':'follow', lastId:s.lastId||null}
     }
   }catch{ /* 저장소 접근 불가 시 기본값 */ }
   return {done:{}, custom:[], mode:'follow', lastId:null}

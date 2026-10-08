@@ -1,4 +1,4 @@
-const MODES = [['follow','따라치기'], ['recall','기억해서 치기']]
+const MODES = [['follow','따라치기'], ['read','읽기']]
 
 export function ModeToggle({ mode, onChange }){
   return (

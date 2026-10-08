@@ -9,7 +9,7 @@ const keepFocus = e => e.preventDefault()
 // 모바일은 키보드가 화면 아래를 가리므로 치는 줄을 화면 위쪽으로 올림
 const isMobile = () => matchMedia('(max-width: 860px)').matches
 
-export function TypingBoard({ session, recall, doneCount, total, onRestart, onPrev, onNext, onRandom, onDelete }){
+export function TypingBoard({ session, reading, doneCount, total, onRestart, onPrev, onNext, onRandom, onDelete }){
   const { sess, finished, live } = session
   const cur = sess.q
   const kw = cur.kw || []
@@ -31,10 +31,26 @@ export function TypingBoard({ session, recall, doneCount, total, onRestart, onPr
         </div>
         {kw.length > 0 && <div className="keywords" aria-label="꼭 말할 키워드">{kw.map(k => <span key={k} className="kw">{k}</span>)}</div>}
 
-        <AnswerLines sess={sess} recall={recall} />
-        {!finished && <TypingInput inputProps={session.inputProps} recall={recall} />}
-        {cur.fig && <SequenceFigure fig={cur.fig} line={sess.lineIdx} recall={recall} />}
+        {reading ? (
+          <div className="sheet is-read">
+            <ol className="lines">{cur.a.map((t, i) => <li key={i} className="line">{t}</li>)}</ol>
+          </div>
+        ) : (
+          <>
+            <AnswerLines sess={sess} />
+            {!finished && <TypingInput inputProps={session.inputProps} />}
+          </>
+        )}
+        {cur.fig && <SequenceFigure fig={cur.fig} line={reading ? -1 : sess.lineIdx} />}
 
+        {reading ? (
+          <div className="controls">
+            <span className="spacer"></span>
+            <button type="button" className="btn" onClick={onPrev}>이전</button>
+            <button type="button" className="btn" onClick={onRandom}>무작위</button>
+            <button type="button" className="btn primary" onClick={onNext}>다음</button>
+          </div>
+        ) : <>
         <div className="stats" aria-live="off">
           <span>타수<b>{live.speed == null ? '—' : live.speed + '타'}</b></span>
           <span>정확도<b>{live.acc == null ? '—' : live.acc + '%'}</b></span>
@@ -42,10 +58,9 @@ export function TypingBoard({ session, recall, doneCount, total, onRestart, onPr
         </div>
 
         {finished ? (
-          <ResultCard result={sess.result} hintCount={sess.hintCount} recall={recall} answer={cur.a} onAgain={onRestart} onNext={onNext} />
+          <ResultCard result={sess.result} answer={cur.a} onAgain={onRestart} onNext={onNext} />
         ) : (
           <div className="controls">
-            {recall && <button type="button" className="btn" onMouseDown={keepFocus} onClick={session.hint}>힌트: 다음 단어</button>}
             <button type="button" className="btn" onMouseDown={keepFocus} onClick={onRestart}>처음부터</button>
             <span className="spacer"></span>
             <button type="button" className="btn" onMouseDown={keepFocus} onClick={onPrev}>이전</button>
@@ -53,6 +68,7 @@ export function TypingBoard({ session, recall, doneCount, total, onRestart, onPr
             <button type="button" className="btn" onMouseDown={keepFocus} onClick={onNext}>다음</button>
           </div>
         )}
+        </>}
       </div>
     </main>
   )
