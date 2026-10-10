@@ -31,21 +31,23 @@ button{font:inherit;color:inherit;cursor:pointer}
 /* top bar */
 .top{display:flex;align-items:center;gap:12px 20px;flex-wrap:wrap;padding:12px 24px;border-bottom:1px solid var(--line);background:var(--panel)}
 .top h1{margin:0;font-size:1.05rem;font-weight:600;letter-spacing:-.01em;margin-right:auto}
-/* 모드 스위치: 지금 모드의 글자를 진하게, 읽기면 손잡이가 오른쪽 */
-.mode-switch{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;padding:6px 2px;font-size:.88rem;color:var(--muted)}
-.switch-track{position:relative;width:40px;height:22px;border-radius:999px;background:var(--faint);transition:background .2s}
-.switch-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .2s}
-.mode-switch[aria-checked="true"] .switch-track{background:var(--ok)}
-.mode-switch[aria-checked="true"] .switch-thumb{transform:translateX(18px)}
-.mode-switch[aria-checked="false"] .lbl-follow,.mode-switch[aria-checked="true"] .lbl-read{color:var(--ink);font-weight:600}
-@media (prefers-reduced-motion: reduce){.switch-track,.switch-thumb{transition:none}}
+/* 모드 스위치: 글자가 스위치 안에 있고, 손잡이가 지금 모드 글자 뒤로 미끄러짐. 손잡이·글자색은 두 테마 공통(흰 글자가 잘 보이는 진한 파랑) */
+.mode-switch{display:inline-flex;align-items:center;border:0;background:transparent;padding:6px 2px;font-size:.8rem;color:var(--muted)}
+.switch-track{position:relative;display:grid;grid-template-columns:1fr 1fr;padding:2px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}
+.switch-track .lbl-follow,.switch-track .lbl-read{position:relative;padding:2px 10px;text-align:center;transition:color .2s}
+.switch-thumb{position:absolute;top:2px;bottom:2px;left:2px;width:calc(50% - 2px);border-radius:999px;background:#1E5BB8;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .2s}
+.mode-switch[aria-checked="true"] .switch-thumb{transform:translateX(100%)}
+.mode-switch[aria-checked="false"] .lbl-follow,.mode-switch[aria-checked="true"] .lbl-read{color:#FFFFFF;font-weight:600}
+@media (prefers-reduced-motion: reduce){.switch-thumb,.switch-track .lbl-follow,.switch-track .lbl-read{transition:none}}
 .overall{font-size:.88rem;color:var(--muted)}
 .overall b{color:var(--ink);font-weight:600}
 
 /* layout */
 .layout{flex:1;min-height:0;display:grid;grid-template-columns:300px minmax(0,1fr)}
 .side{min-height:0;display:flex;flex-direction:column;gap:12px;padding:16px;border-right:1px solid var(--line);background:var(--panel)}
-.cats{display:flex;flex-wrap:wrap;gap:6px}
+.cats-wrap{display:flex;align-items:flex-start;gap:6px}
+.cats{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px}
+.cats-toggle{display:none}
 .chip{border:1px solid var(--line);background:var(--sheet);border-radius:999px;padding:4px 11px;font-size:.82rem}
 .chip-n{color:var(--muted);font-size:.75rem;margin-left:2px}
 .chip[aria-pressed="true"]{border-color:var(--ok);background:var(--band);color:var(--ok);font-weight:500}
@@ -185,10 +187,21 @@ dialog::backdrop{background:rgba(10,20,30,.45)}
   /* 터치하기 좋은 크기 */
   .btn{min-height:42px;padding:9px 14px}
   .btn.quiet{min-height:36px}
-  .chip{padding:7px 12px;font-size:.86rem}
+  .chip{padding:7px 12px;font-size:.86rem;flex:none;white-space:nowrap}
+  /* 분류 탭: 접힘 = 한 줄 가로 스크롤(오른쪽 끝을 흐리게 해서 더 있다는 표시), 펼침 = 전부 줄바꿈 */
+  /* 왼쪽은 화면 끝까지 늘려서(-16px) 탭이 상자 중간이 아니라 화면 끝에서 잘리게 함 */
+  .cats{--fade-l:24px;--fade-r:32px;flex-wrap:nowrap;overflow-x:auto;margin-left:-16px;padding-left:16px;scroll-padding-left:16px;scroll-behavior:smooth;scrollbar-width:none;mask-image:linear-gradient(to right,transparent,#000 var(--fade-l),#000 calc(100% - var(--fade-r)),transparent)}
+  .cats[data-start="true"]{--fade-l:0px}
+  .cats[data-end="true"]{--fade-r:0px}
+  .cats::-webkit-scrollbar{display:none}
+  .cats.is-open{flex-wrap:wrap;overflow:visible;margin-left:0;padding-left:0;mask-image:none}
+  .cats-toggle{display:grid;place-items:center;flex:none;width:36px;height:36px;border:1px solid var(--line);border-radius:999px;background:var(--sheet);color:var(--muted)}
+  .cats-toggle svg{transition:transform .2s}
+  .cats-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
   .mode-switch{min-height:42px}
   .qitem{padding:11px 9px}
 }
 @media (max-width:860px) and (prefers-reduced-motion: reduce){
-  .side,.layout.is-list-open .side{transition:none}
+  .side,.layout.is-list-open .side,.cats-toggle svg{transition:none}
+  .cats{scroll-behavior:auto}
 }
